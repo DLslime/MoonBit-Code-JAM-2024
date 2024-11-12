@@ -68,7 +68,7 @@ fn screen() -> Unit {
   } else if global.scene == 3 {
     @wasm4.set_draw_colors(4, index=1)
     @wasm4.set_draw_colors(0, index=2)
-    @wasm4.text("\{global.score[0]}:\{global.score[1]}", 70, 75)
+    @wasm4.text("\{global.score[1]}:\{global.score[0]}", 70, 75)
   }
 }
 
