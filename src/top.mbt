@@ -8,7 +8,7 @@ struct Global {
 const PLAYER_SIZE = 40
 const BAN_WIDTH = 20
 const BAN_HIGH = 4
-const BALL_SIZE = 5
+const BALL_SIZE = 4
 
 struct Player {
   mut x: Int
@@ -71,7 +71,7 @@ fn screen() -> Unit {
       }
     }
     @wasm4.oval(player[2].x-BALL_SIZE/2, player[2].y-BALL_SIZE/2, BALL_SIZE, BALL_SIZE)
-  } else if global.scene == 3 {
+  } else if global.scene >= 3 {
     @wasm4.set_draw_colors(4, index=1)
     @wasm4.set_draw_colors(0, index=2)
     @wasm4.text("\{global.score[1]}:\{global.score[0]}", 70, 75)
@@ -102,6 +102,7 @@ fn input() -> Unit {
       (player[i].y -player[2].y).abs() < BALL_SIZE {
         global.score[i] += 1
         global.scene = 3
+        global.scene += i.reinterpret_as_uint()
         global.count = 0
         @wasm4.tone(
           (440, 0),
@@ -111,9 +112,13 @@ fn input() -> Unit {
         )
       }
     }
-  } else if global.scene == 3 {
+  } else if global.scene >= 3 {
     if (global.count > 180) {
-      blablabla()
+      if global.scene == 4 {
+        blablabla()
+      } else {
+        blablabla(b=true)
+      }
       global.scene = 2
     }
   }
@@ -246,10 +251,13 @@ fn ballHith(i : Int, a : Int) -> Bool {
   }
 }
 
-fn blablabla() -> Unit {
+fn blablabla(~b : Bool = false) -> Unit {
   player[0]={x : 80, nx : 0, y : 160-PLAYER_SIZE/2, ny : 0, f : 3, p : @wasm4.get_gamepad(index=1)}
   player[1]={x : 80, nx : 0, y : PLAYER_SIZE/2, ny : 0, f : 1, p : @wasm4.get_gamepad(index=2)}
   player[2]={x : 80, nx : 1, y : 80, ny : 1, f : 0, p : @wasm4.get_gamepad(index=3)}
+  if b {
+    player[2].ny = -1
+  }
 }
 
 fn getAwayornot(pp : Player, ~b : Int = 1) -> (Int, Int) {
